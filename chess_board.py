@@ -1,4 +1,4 @@
-from chess_pieces import Pawn
+import chess_pieces
 
 class Board:
 
@@ -63,3 +63,33 @@ class Board:
         
         return False
 
+    def is_square_threatened(self, target_location, attacking_color):
+
+        piece_locations = []
+        threatened = True
+
+        for i in range(0, 8):
+            for j in range(0, 8):
+
+                square_value = self.grid[i][j]
+                
+                if square_value is not None:
+                    if square_value.color == attacking_color:
+                        piece_locations.append([i, j])
+
+        for location in piece_locations:
+
+            piece = self.grid[location[0]][location[1]]
+            can_move, required_empty_squares = piece.capture(location, target_location)  
+
+            if can_move:
+
+                if required_empty_squares == []: 
+                    return threatened 
+                
+                for square in required_empty_squares:
+
+                    if self.grid[square[0]][square[1]] is not None:
+                        return False
+
+        return True
